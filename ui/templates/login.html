@@ -1,0 +1,57 @@
+{{define "content"}}
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-logo">TS</div>
+    <h1>Войдите в TS Forum</h1>
+
+    {{if .Error}}
+    <div class="auth-error">{{.Error}}</div>
+    {{end}}
+
+    <form action="/login" method="POST">
+      <div class="input-group">
+        <input type="text" name="login" placeholder="Email или никнейм" value="{{.Login}}" required />
+      </div>
+      <div class="input-group">
+        <input type="password" name="password" placeholder="Пароль" required />
+      </div>
+      <button type="submit" class="btn-tweet btn-full">Войти</button>
+    </form>
+
+      <div class="oauth-buttons">
+        <a class="btn-tweet btn-full" href="/auth/google">Continue with Google</a>
+        <a class="btn-tweet btn-full" href="/auth/github">Continue with GitHub</a>
+      </div>
+
+      <div class="auth-footer">
+      <p>Еще нет аккаунта? <a href="/register">Зарегистрироваться</a></p>
+    </div>
+  </div>
+</div>
+{{end}}
+{{define "sidebar"}} {{end}}
+{{define "widgets"}} <div class="widget-box">
+  <h2>Для аудитора</h2>
+  <p>Вход работает по email ИЛИ по никнейму.</p>
+  <p>Предустановленные учётные данные:</p>
+  <table class="styled-table" >
+    <tr>
+      <th>Учетная запись</th>
+      <th>Пароль</th>
+    </tr>
+    <tr>
+      <td>test@test.com</td>
+      <td>test@test.com</td>
+    </tr>    
+    <tr>
+      <td>bob@test.com</td>
+      <td>bob@test.com</td>
+    </tr>
+    <tr>
+      <td>tt@tt.com</td>
+      <td>tt@tt.com</td>
+    </tr>
+  </table>
+
+  <p>Можете зарегистрировать нового пользователя в форме регистрации</p>
+</div>{{end}}

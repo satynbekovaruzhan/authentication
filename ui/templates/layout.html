@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TS Forum | Tomorrow School</title>
+    <link rel="stylesheet" href="/static/css/style.css" />
+  </head>
+  <body data-user="{{with .User}}{{.ID}}{{end}}" data-username="{{with .User}}{{.Username}}{{end}}">
+    <div class="app-container">
+      <nav class="sidebar">
+        <a href="/" class="logo">TS-FORUM</a>
+        {{block "sidebar" .}}{{end}}
+        <div class="user-profile">
+          {{if .User}}
+          <span class="username">{{if .User.FirstName}}{{.User.FirstName}} {{.User.LastName}}<br /><small>@{{.User.Username}}</small>{{else}}{{.User.Username}}{{end}}</span>
+          <form action="/logout" method="POST" class="logout-form">
+            <button type="submit" class="btn-login">Выйти</button>
+          </form>
+          {{else}}
+          <div class="user-actions">
+            <a href="/login" class="btn-login">Войти</a>
+            <a href="/register" class="btn-login">Регистрация</a>
+          </div>
+          {{end}}
+        </div>
+      </nav>
+
+      <main class="feed">{{template "content" .}}</main>
+
+      <aside class="widgets">
+        {{block "widgets" .}}{{end}}
+        {{if .User}}
+        <div class="widget-box chat-panel">
+          <h3>Кто онлайн <span class="online-count">{{onlineCount .Contacts}}</span></h3>
+          <div class="msg-conversations">
+            {{range .Contacts}}
+            <a href="/messages?with={{.User.ID}}" class="conv-item {{if eq .User.ID $.ActiveWith}}active{{end}}">
+              <span class="online-dot {{if .Online}}on{{end}}"></span>
+              <span class="contact-body">
+                <strong>@{{.User.Username}}</strong>
+                {{if .HasMsg}}<span class="msg-preview">{{.LastMsg}}</span>{{end}}
+              </span>
+            </a>
+            {{else}}
+            <p class="auth-prompt">Пока нет других пользователей</p>
+            {{end}}
+          </div>
+        </div>
+        {{end}}
+      </aside>
+    </div>
+
+    <div id="chat-toasts" class="chat-toasts"></div>
+
+    <script src="/static/js/realtime.js"></script>
+  </body>
+</html>

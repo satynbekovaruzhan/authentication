@@ -1,0 +1,5 @@
+/forum
+/forum.exe
+*.test
+.env
+/forum-authentication

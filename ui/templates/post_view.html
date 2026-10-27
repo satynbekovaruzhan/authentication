@@ -1,0 +1,93 @@
+{{define "content"}}
+<div class="page-card">
+  <div class="post-detail-header">
+    <div class="post-info">
+      <span class="username">@{{ .Post.Username }}</span>
+      <span class="dot">·</span>
+      <span class="time">{{ .Post.CreatedAt.Format "02.01.2006 15:04" }}</span>
+    </div>
+    {{if .Post.Title}}<h1 class="post-detail-title">{{ .Post.Title }}</h1>{{end}}
+  </div>
+
+  <div class="post-detail-body">
+    <p>{{ .Post.Content }}</p>
+  </div>
+
+  <div class="post-actions">
+    <form action="/post/reaction" method="POST" class="reaction-form" data-post-id="{{ .Post.ID }}">
+      <input type="hidden" name="post_id" value="{{ .Post.ID }}" />
+      <input type="hidden" name="vote" value="1" />
+      <button type="submit" class="action-btn action-btn--like">👍 <span data-count="likes">{{ .Post.Likes }}</span></button>
+    </form>
+
+    <form action="/post/reaction" method="POST" class="reaction-form" data-post-id="{{ .Post.ID }}">
+      <input type="hidden" name="post_id" value="{{ .Post.ID }}" />
+      <input type="hidden" name="vote" value="-1" />
+      <button type="submit" class="action-btn action-btn--dislike">👎 <span data-count="dislikes">{{ .Post.Dislikes }}</span></button>
+    </form>
+
+    <a href="/" class="action-btn">← Назад</a>
+  </div>
+</div>
+
+<div class="page-card comments-section">
+  <h3>Комментарии ({{ len .Comments }})</h3>
+
+  {{ if .User }}
+  <form action="/comment/create" method="POST" class="comment-form">
+    <input type="hidden" name="post_id" value="{{ .Post.ID }}" />
+    <textarea
+      name="content"
+      placeholder="Напишите Ваш комментарий..."
+      required
+      rows="3"
+      maxlength="500"
+    ></textarea>
+    <button type="submit" class="btn-tweet">Отправить</button>
+  </form>
+  {{ else }}
+  <p class="auth-prompt">
+    <a href="/login">Войдите</a>, чтобы оставить комментарий.
+  </p>
+  {{ end }}
+
+  <div class="comments-list">
+    {{ range .Comments }}
+    <div class="comment-card">
+      <div class="comment-header">
+        <strong>@{{ .Username }}</strong>
+        <span class="time">{{ .CreatedAt.Format "02.01 15:04" }}</span>
+      </div>
+      <p>{{ .Content }}</p>
+      <div class="comment-actions">
+        <form action="/comment/reaction" method="POST" class="reaction-form" data-comment-id="{{ .ID }}">
+          <input type="hidden" name="comment_id" value="{{ .ID }}" />
+          <input type="hidden" name="vote" value="1" />
+          <button type="submit" class="action-btn">👍 <span data-count="likes">{{ .Likes }}</span></button>
+        </form>
+        <form action="/comment/reaction" method="POST" class="reaction-form" data-comment-id="{{ .ID }}">
+          <input type="hidden" name="comment_id" value="{{ .ID }}" />
+          <input type="hidden" name="vote" value="-1" />
+          <button type="submit" class="action-btn">👎 <span data-count="dislikes">{{ .Dislikes }}</span></button>
+        </form>
+      </div>
+    </div>
+    {{ else }}
+    <div class="empty-state">
+      <p>Комментариев пока нет. Будьте первым!</p>
+    </div>
+    {{ end }}
+  </div>
+</div>
+{{end}}
+{{define "sidebar"}} {{end}}
+{{define "widgets"}}
+<div class="widget-box">
+  <h3>Аудитору</h3>
+  <p>
+    На этой странице Вы можете поставить лайки/дизлайки и посту и комментариям. Можете написать свой комментарий.
+  </p>
+</div>
+
+
+{{end}}

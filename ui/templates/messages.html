@@ -1,0 +1,75 @@
+{{define "content"}}
+{{if .With}}
+<div class="page-card">
+  <div class="chat-header">
+    <span class="online-dot {{if .WithOnline}}on{{end}}"></span>
+    <h3>Диалог с @{{.With.Username}}</h3>
+    {{if .WithOnline}}<small>в сети</small>{{else}}<small>не в сети</small>{{end}}
+  </div>
+  <div
+    class="msg-list"
+    id="msg-list"
+    data-me="{{.User.ID}}"
+    data-with="{{.With.ID}}"
+    data-oldest="{{.OldestID}}"
+    data-has-more="{{.HasMore}}"
+  >
+    {{range .Messages}}
+    <div class="msg-bubble {{if eq .SenderID $.User.ID}}msg-mine{{else}}msg-theirs{{end}}">
+      <div class="msg-meta">
+        <strong>@{{.Sender}}</strong>
+        <span>{{.CreatedAt.Format "02.01.2006 15:04"}}</span>
+      </div>
+      <p>{{.Content}}</p>
+    </div>
+    {{end}}
+  </div>
+  <form action="/messages/send" method="POST" class="comment-form">
+    <input type="hidden" name="receiver_id" value="{{.With.ID}}" />
+    <textarea
+      name="content"
+      placeholder="Сообщение..."
+      required
+      rows="3"
+      maxlength="1000"
+    ></textarea>
+    <button type="submit" class="btn-tweet">Отправить</button>
+  </form>
+</div>
+{{else}}
+<div class="page-card">
+  <h3>Новое сообщение</h3>
+  <form action="/messages/send" method="POST" class="comment-form">
+    <select name="receiver_id" required>
+      <option value="">Выберите получателя...</option>
+      {{range .Users}}
+      <option value="{{.ID}}">@{{.Username}} ({{.Email}})</option>
+      {{end}}
+    </select>
+    <textarea
+      name="content"
+      placeholder="Текст сообщения..."
+      required
+      rows="4"
+      maxlength="1000"
+    ></textarea>
+    <button type="submit" class="btn-tweet">Отправить</button>
+  </form>
+  <p class="auth-prompt">или выберите собеседника в списке «Кто онлайн» справа</p>
+</div>
+{{end}}
+{{end}}
+
+{{define "sidebar"}}
+<ul class="nav-links">
+  <li><a href="/">🏠 Главная</a></li>
+  <li><a href="/messages" class="active">✉️ Сообщения</a></li>
+</ul>
+{{end}}
+
+{{define "widgets"}}
+<div class="widget-box">
+  <h3>Личные сообщения</h3>
+  <p>Переписка видна только двум участникам диалога.</p>
+</div>
+{{end}}

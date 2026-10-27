@@ -1,0 +1,102 @@
+{{define "content"}}
+<div class="create-tweet">
+  {{if .User}}
+  <form action="/post/create" method="POST">
+    <div class="input-group">
+      <input type="text" name="title" placeholder="Заголовок (необязательно)" maxlength="200" />
+    </div>
+    <div class="input-group">
+      <textarea
+        name="content"
+        placeholder="Хочется поделиться мыслями/новостями..."
+        required
+        maxlength="5000"
+        rows="6"
+      ></textarea>
+    </div>
+    <div class="create-footer">
+      <div class="category-chips">
+        {{ range .Categories }}
+        <label class="chip">
+          <input type="checkbox" name="category" value="{{ .ID }}" />
+          <span>#{{ .Name }}</span>
+        </label>
+        {{ end }}
+      </div>
+      <button type="submit" class="btn-tweet">Пост</button>
+    </div>
+  </form>
+  {{else}}
+  <p class="auth-prompt">
+    <a href="/login">Войдите</a>, чтобы опубликовать пост
+  </p>
+  {{end}}
+</div>
+
+<div class="posts-list">
+  {{range .Posts}}
+  <article class="post">
+    <div class="post-content">
+      <div class="post-info">
+        <span class="username">{{.Username}}</span>
+        <span class="dot">·</span>
+        <span class="time">{{.CreatedAt.Format "02 Jan 15:04"}}</span>
+      </div>
+      {{if .Title}}<h3 class="post-title">{{.Title}}</h3>{{end}}
+      <p class="text">{{.Content}}</p>
+
+      <div class="post-categories">
+        {{range .Categories}}
+        <span class="tag">#{{.}}</span>
+        {{end}}
+      </div>
+
+      <div class="post-actions">
+        <a href="/post/view?id={{.ID}}" class="action-btn">💬 Комментарии</a>
+
+        <form action="/post/reaction" method="POST" class="reaction-form" data-post-id="{{.ID}}">
+          <input type="hidden" name="post_id" value="{{.ID}}" />
+          <input type="hidden" name="vote" value="1" />
+          <button type="submit" class="action-btn">👍 <span data-count="likes">{{.Likes}}</span></button>
+        </form>
+
+        <form action="/post/reaction" method="POST" class="reaction-form" data-post-id="{{.ID}}">
+          <input type="hidden" name="post_id" value="{{.ID}}" />
+          <input type="hidden" name="vote" value="-1" />
+          <button type="submit" class="action-btn">👎 <span data-count="dislikes">{{.Dislikes}}</span></button>
+        </form>
+      </div>
+    </div>
+  </article>
+  {{else}}
+  <div class="empty-state">
+    <p>Пока здесь пусто... Будьте первым, кто создаст пост!</p>
+  </div>
+  {{end}}
+</div>
+{{end}}
+
+{{define "sidebar"}}
+<ul class="nav-links">
+  <li><a href="/" class="{{if not $.ActiveFilter}}active{{end}}">🏠 Главная</a></li>
+  {{if .User}}
+  <li><a href="/?filter=created" class="{{if eq $.ActiveFilter "created"}}active{{end}}">👤 Мои посты</a></li>
+  <li><a href="/?filter=liked" class="{{if eq $.ActiveFilter "liked"}}active{{end}}">❤️ Понравилось</a></li>
+  <li><a href="/messages">✉️ Сообщения</a></li>
+  {{end}}
+</ul>
+{{end}}
+
+{{define "widgets"}}
+<div class="widget-box">
+  <h3>Категории</h3>
+  <div class="trend-item">
+    <a href="/" class="{{if eq $.ActiveCategory 0}}active{{end}}">Все категории</a>
+  </div>
+  {{range .Categories}}
+  <div class="trend-item">
+    <a href="/?category={{.ID}}" class="{{if eq .ID $.ActiveCategory}}active{{end}}">#{{.Name}}</a>
+  </div>
+  {{end}}
+</div>
+{{end}}

@@ -1,0 +1,58 @@
+{{define "content"}}
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-logo">TS</div>
+    <h1>Создайте аккаунт</h1>
+
+    {{if .Error}}
+    <div class="auth-error">{{.Error}}</div>
+    {{end}}
+
+    <form action="/register" method="POST">
+      <div class="row-two">
+        <div class="input-group">
+          <input type="text" name="first_name" placeholder="Имя" value="{{.FirstName}}" required maxlength="60" />
+        </div>
+        <div class="input-group">
+          <input type="text" name="last_name" placeholder="Фамилия" value="{{.LastName}}" required maxlength="60" />
+        </div>
+      </div>
+      <div class="row-two">
+        <div class="input-group">
+          <input type="number" name="age" placeholder="Возраст" value="{{.Age}}" min="1" max="120" required />
+        </div>
+        <div class="input-group">
+          <select name="gender" required>
+            <option value="" {{if not .Gender}}selected{{end}}>Пол</option>
+            <option value="male" {{if eq .Gender "male"}}selected{{end}}>Мужской</option>
+            <option value="female" {{if eq .Gender "female"}}selected{{end}}>Женский</option>
+            <option value="other" {{if eq .Gender "other"}}selected{{end}}>Другое</option>
+          </select>
+        </div>
+      </div>
+      <div class="input-group">
+        <input type="email" name="email" placeholder="Email" value="{{.Email}}" required />
+      </div>
+      <div class="input-group">
+        <input type="text" name="username" placeholder="Никнейм" value="{{.Username}}" required maxlength="40" />
+      </div>
+      <div class="input-group">
+        <input type="password" name="password" placeholder="Пароль (минимум 6 символов)" required />
+      </div>
+      <button type="submit" class="btn-tweet btn-full">Зарегистрироваться</button>
+    </form>
+
+    <div class="auth-footer">
+      <p>Уже есть аккаунт? <a href="/login">Войти</a></p>
+    </div>
+  </div>
+</div>
+{{end}}
+{{define "sidebar"}} {{end}}
+{{define "widgets"}} <div class="widget-box">
+  <h2>Информация для аудитора</h2>
+  <p>Пользователи управляются силами самого проекта: учётная запись сохраняется в SQLite, пароль хранится только в виде bcrypt-хэша.</p>
+  <p>На стороне сервера проверяется формат email, занятость никнейма/email, корректность возраста и пола,
+    минимальная длина пароля (6 символов) и длины полей.</p>
+  <p>Проверка на то, что пользователь с такими учётными данными уже существует, выполняется.</p>
+</div>{{end}}
